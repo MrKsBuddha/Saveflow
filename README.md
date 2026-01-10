@@ -56,6 +56,7 @@ lib/
 - [x] UI Screens (Dashboard, History, Settings)
 - [x] Charts
 - [x] README
+
 =======
 💸 SaveFlow
 
@@ -162,3 +163,7 @@ MIT License
 🚧 In active development
 MVP build in progress.
 >>>>>>> 9922934550432e235ffd1fb24f8d5f4899162756
+>>>>>>>
+>>>>>>> output
+>>>>>>> <img width="335" height="741" alt="image" src="https://github.com/user-attachments/assets/8cd77ac7-61f5-449c-b1aa-ea9a5ca75a60" />
+
