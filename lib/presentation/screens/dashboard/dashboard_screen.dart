@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:intl/intl.dart';
 import 'package:saveflow/logic/notifiers/expense_notifier.dart';
 import 'package:saveflow/logic/notifiers/settings_notifier.dart';
 import 'package:saveflow/presentation/screens/add_expense/add_expense_sheet.dart';
@@ -21,9 +22,14 @@ class DashboardScreen extends ConsumerWidget {
     final remaining = budget - totalSpent;
     final progress = (budget > 0) ? (totalSpent / budget).clamp(0.0, 1.0) : 0.0;
 
+    final now = DateTime.now();
+    final monthYear = DateFormat('MMMM yyyy').format(now); // Jan 2026
+    final todayFull = DateFormat('EEEE • d MMMM yyyy').format(now); // Tuesday • 9 Jan 2026
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('SaveFlow'),
+        centerTitle: true,
         actions: [
            IconButton(
             icon: const Icon(Icons.history),
@@ -54,6 +60,19 @@ class DashboardScreen extends ConsumerWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
+            // Today's Date Header
+            Container(
+              alignment: Alignment.centerLeft,
+              margin: const EdgeInsets.only(bottom: 16),
+              child: Text(
+                todayFull,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: Colors.grey[600],
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+
             // Savings Card
             Card(
               color: Theme.of(context).colorScheme.primaryContainer,
@@ -103,7 +122,7 @@ class DashboardScreen extends ConsumerWidget {
                 padding: const EdgeInsets.all(20),
                 child: Column(
                   children: [
-                    Text('Current Month', style: Theme.of(context).textTheme.titleLarge),
+                    Text(monthYear, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
                     const Gap(20),
                     SizedBox(
                       height: 150,
@@ -182,8 +201,12 @@ class DashboardScreen extends ConsumerWidget {
                           backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
                           child: Icon(Icons.receipt, color: Theme.of(context).colorScheme.onSecondaryContainer),
                         ),
-                        title: Text(expense.reason),
-                        subtitle: Text('${expense.date.day}/${expense.date.month}'),
+                        title: Text(
+                          expense.reason,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        subtitle: Text(DateFormat('d MMM').format(expense.date)),
                         trailing: Text(
                           '- ₹ ${expense.amount.toStringAsFixed(0)}',
                           style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.red),
@@ -192,6 +215,8 @@ class DashboardScreen extends ConsumerWidget {
                     );
                   },
                 ),
+            // Bottom Padding for FAB
+            const Gap(80),
           ],
         ),
       ),
