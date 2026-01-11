@@ -1,4 +1,3 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -8,6 +7,7 @@ import 'package:saveflow/logic/notifiers/settings_notifier.dart';
 import 'package:saveflow/presentation/screens/add_expense/add_expense_sheet.dart';
 import 'package:saveflow/presentation/screens/history/history_screen.dart';
 import 'package:saveflow/presentation/screens/settings/settings_screen.dart';
+import 'package:saveflow/presentation/widgets/budget_pie_chart.dart';
 
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
@@ -20,12 +20,11 @@ class DashboardScreen extends ConsumerWidget {
     final totalSpent = expenses.fold(0.0, (sum, e) => sum + e.amount);
     final budget = settings.monthlyLimit;
     final remaining = budget - totalSpent;
-    final progress = (budget > 0) ? (totalSpent / budget).clamp(0.0, 1.0) : 0.0;
-
+    
     final now = DateTime.now();
     // Month label shows only name (e.g. January) since Year is in the header
     final monthLabel = DateFormat('MMMM').format(now); 
-    final todayFull = DateFormat('EEEE • d MMMM yyyy').format(now); // Tuesday • 9 Jan 2026
+    final todayFull = DateFormat('EEEE • d MMMM yyyy').format(now); 
 
     return Scaffold(
       appBar: AppBar(
@@ -125,34 +124,10 @@ class DashboardScreen extends ConsumerWidget {
                   children: [
                     Text(monthLabel, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
                     const Gap(20),
-                    SizedBox(
-                      height: 150,
-                      width: 150,
-                      child: Stack(
-                        fit: StackFit.expand,
-                        children: [
-                          CircularProgressIndicator(
-                            value: progress,
-                            strokeWidth: 12,
-                            backgroundColor: Colors.grey.shade200,
-                            color: remaining < 0 ? Colors.red : Theme.of(context).colorScheme.primary,
-                            strokeCap: StrokeCap.round,
-                          ),
-                          Center(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  '${(progress * 100).toInt()}%',
-                                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
-                                ),
-                                Text('Used', style: Theme.of(context).textTheme.bodySmall),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                    
+                    // Chart Widget
+                    BudgetPieChart(expenses: expenses, budget: budget),
+                    
                     const Gap(24),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
