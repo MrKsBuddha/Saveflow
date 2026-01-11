@@ -23,7 +23,8 @@ class DashboardScreen extends ConsumerWidget {
     final progress = (budget > 0) ? (totalSpent / budget).clamp(0.0, 1.0) : 0.0;
 
     final now = DateTime.now();
-    final monthYear = DateFormat('MMMM yyyy').format(now); // Jan 2026
+    // Month label shows only name (e.g. January) since Year is in the header
+    final monthLabel = DateFormat('MMMM').format(now); 
     final todayFull = DateFormat('EEEE • d MMMM yyyy').format(now); // Tuesday • 9 Jan 2026
 
     return Scaffold(
@@ -122,7 +123,7 @@ class DashboardScreen extends ConsumerWidget {
                 padding: const EdgeInsets.all(20),
                 child: Column(
                   children: [
-                    Text(monthYear, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
+                    Text(monthLabel, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
                     const Gap(20),
                     SizedBox(
                       height: 150,
